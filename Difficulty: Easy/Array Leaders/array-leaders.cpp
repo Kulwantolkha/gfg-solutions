@@ -11,20 +11,15 @@ class Solution {
   public:
     vector<int> leaders(vector<int>& arr) {
         // Code here
-        vector<int> v;
-        for(int i=0;i<arr.size();i++){
-            bool b = true;
-            for(int j=i+1;j<=arr.size()-1;j++){
-                if(arr[i]<arr[j]){
-                    b=false;
-                    break;
-                }
+        int max = INT_MIN;
+        vector<int> ans;
+        for(int i = arr.size()-1;i>=0;i--){
+            if(arr[i]>=max){
+                ans.insert(ans.begin(),arr[i]);
+                max  = arr[i];
             }
-            if(b==true){
-                v.push_back(arr[i]);
-            } 
         }
-        return v;
+        return ans;
     }
 };
 
@@ -59,6 +54,7 @@ int main() {
             }
         }
         cout << endl;
+        cout << "~" << endl;
     }
 
     return 0;
