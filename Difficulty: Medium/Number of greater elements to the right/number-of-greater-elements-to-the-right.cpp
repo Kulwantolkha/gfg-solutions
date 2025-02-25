@@ -12,18 +12,26 @@ class Solution{
 public:
 
     vector<int> count_NGE(int n, vector<int> &arr, int queries, vector<int> &indices){
-        vector<int> ans;
-        for(int i=0;i<queries;i++){
-            int cnt =0;
-            int num = arr[indices[i]];
-            for(int j=indices[i];j<arr.size();j++){
-                if(arr[j]>num){
-                    cnt++;
-                }    
+        vector<int> ans(arr.size(),0);
+        stack<int> st1;
+        stack<int> st2;
+        for(int i=arr.size()-1;i>=0;i--){
+            while(!st1.empty() && st1.top()<=arr[i]){
+                st2.push(st1.top());
+                st1.pop();
             }
-            ans.push_back(cnt);
+            ans[i] = st1.empty() ? 0 : st1.size();
+            st1.push(arr[i]);
+            while(!st2.empty()){
+                st1.push(st2.top());
+                st2.pop();
+            }
         }
-        return ans;
+        vector<int> f(queries,0);
+        for(int i=0;i<queries;i++){
+            f[i] = ans[indices[i]];
+        }
+        return f;
     }
 
 };
