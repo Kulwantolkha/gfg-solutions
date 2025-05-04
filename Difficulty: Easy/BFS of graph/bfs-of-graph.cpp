@@ -16,13 +16,13 @@ class Solution {
         q.push(0);
         visited[0] = 1;
         while(!q.empty()){
-            int node = q.front();
+            int curr = q.front();
+            ans.push_back(curr);
             q.pop();
-            ans.push_back(node);
-            for(int i : adj[node]){
-                if(!visited[i]){
-                    visited[i] = true;
-                    q.push(i);
+            for(auto it:adj[curr]){
+                if(!visited[it]){
+                    visited[it] = true;
+                    q.push(it);
                 }
             }
         }
