@@ -4,7 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node {
+class Node {
+  public:
     int data;
     Node *left;
     Node *right;
@@ -80,10 +81,9 @@ Node *buildTree(string str) {
 
 // } Driver Code Ends
 
-// User function Template for C++
-
 /*
-struct Node {
+class Node {
+  public:
     int data;
     Node *left;
     Node *right;
@@ -92,73 +92,64 @@ struct Node {
         data = val;
         left = right = NULL;
     }
-};*/
-
+};
+*/
 class Solution {
   public:
-    int findDis(Node* target, map<Node*,Node*>& mpp){
+    int findtime(map<Node*,Node*> mpp,Node* newroot){
+        int cnt=0;
         queue<Node*> q;
-        q.push(target);
-        map<Node*,int> visited;
-        visited[target] = 1; // Mark target as visited initially
-        int ans = 0;
-        
+        q.push(newroot);
+        map<Node*,bool> vis;
+        vis[newroot]=1;
         while(!q.empty()){
-            int size = q.size();
-            bool found = false;
-            for(int i=0; i<size; i++){
-                Node* node = q.front();
+            int sz = q.size();
+            bool flg = false;
+            for(int i=0;i<sz;i++){
+                Node* curr = q.front();
                 q.pop();
-                
-                if(node->left && !visited[node->left]){
-                    found = true;
-                    visited[node->left] = 1;
-                    q.push(node->left);
+                if(curr->left && !vis[curr->left]){
+                    flg=true;
+                    vis[curr->left]=1;
+                    q.push(curr->left);
                 }
-                if(node->right && !visited[node->right]){
-                    found = true;
-                    visited[node->right] = 1;
-                    q.push(node->right);
+                if(curr->right && !vis[curr->right]){
+                    flg = true;
+                    vis[curr->right]=1;
+                    q.push(curr->right);
                 }
-                if(mpp.find(node) != mpp.end() && !visited[mpp[node]]) { // Corrected map access
-                    found = true;
-                    visited[mpp[node]] = 1;
-                    q.push(mpp[node]);
+                if(mpp[curr] && !vis[mpp[curr]]){
+                    flg = true;
+                    vis[mpp[curr]]=1;
+                    q.push(mpp[curr]);
                 }
             }
-            if(found) ans++;
+            if(flg) cnt++;
         }
-        return ans;
+        return cnt;
     }
-
-    Node* makeMap(Node* root, int target, map<Node*,Node*>& mpp){ // Pass by reference
+    void bfs(Node* root, map<Node*,Node*>& mpp,Node* &newroot,int target){
         queue<Node*> q;
         q.push(root);
-        Node* result = nullptr;
-        
         while(!q.empty()){
-            Node* curr = q.front();
+            Node* parentNode = q.front();
+            if(parentNode->data==target)    newroot = parentNode;
             q.pop();
-            if(curr->data == target)  
-                result = curr;
-                
-            if(curr->left){
-                mpp[curr->left] = curr;
-                q.push(curr->left);
+            if(parentNode->left){
+                mpp[parentNode->left] = parentNode;
+                q.push(parentNode->left);
             }
-            if(curr->right){
-                mpp[curr->right] = curr;
-                q.push(curr->right);
+            if(parentNode->right){
+                mpp[parentNode->right] = parentNode;
+                q.push(parentNode->right);
             }
         }
-        return result;
     }
-
     int minTime(Node* root, int target) {
-        if(!root) return 0;
-        map<Node*,Node*> mpp;
-        Node* tar = makeMap(root, target, mpp);
-        return findDis(tar, mpp);
+        map<Node*,Node*> parpoi;
+        Node* newroot = root;
+        bfs(root,parpoi,newroot,target);
+        return findtime(parpoi,newroot);
     }
 };
 
